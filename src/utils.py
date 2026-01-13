@@ -11,7 +11,7 @@ import pandas as pd
 def set_plot_style(style='seaborn', context='notebook', palette='husl'):
     """
     Set global plotting style.
-    
+
     Parameters
     ----------
     style : str
@@ -29,7 +29,7 @@ def set_plot_style(style='seaborn', context='notebook', palette='husl'):
 def save_figure(fig, filename, dpi=300, bbox_inches='tight'):
     """
     Save figure with high quality.
-    
+
     Parameters
     ----------
     fig : matplotlib.figure.Figure
@@ -48,7 +48,7 @@ def save_figure(fig, filename, dpi=300, bbox_inches='tight'):
 def create_subplot_grid(n_plots, ncols=3, figsize_per_plot=(5, 4)):
     """
     Create subplot grid for multiple plots.
-    
+
     Parameters
     ----------
     n_plots : int
@@ -57,7 +57,7 @@ def create_subplot_grid(n_plots, ncols=3, figsize_per_plot=(5, 4)):
         Number of columns
     figsize_per_plot : tuple
         Size of each subplot
-    
+
     Returns
     -------
     fig : matplotlib.figure.Figure
@@ -67,28 +67,28 @@ def create_subplot_grid(n_plots, ncols=3, figsize_per_plot=(5, 4)):
     """
     nrows = (n_plots + ncols - 1) // ncols
     figsize = (figsize_per_plot[0] * ncols, figsize_per_plot[1] * nrows)
-    
+
     fig, axes = plt.subplots(nrows, ncols, figsize=figsize)
     axes = axes.flatten() if n_plots > 1 else [axes]
-    
+
     # Hide extra subplots
     for i in range(n_plots, len(axes)):
         axes[i].axis('off')
-    
+
     return fig, axes
 
 
 def format_large_numbers(x, pos=None):
     """
     Format large numbers for axis labels.
-    
+
     Parameters
     ----------
     x : float
         Number to format
     pos : int, optional
         Position (required by FuncFormatter)
-    
+
     Returns
     -------
     formatted : str
@@ -107,7 +107,7 @@ def format_large_numbers(x, pos=None):
 def add_value_labels(ax, spacing=5, format_str='.0f'):
     """
     Add value labels to bar chart.
-    
+
     Parameters
     ----------
     ax : matplotlib.axes.Axes
@@ -120,9 +120,9 @@ def add_value_labels(ax, spacing=5, format_str='.0f'):
     for rect in ax.patches:
         y_value = rect.get_height()
         x_value = rect.get_x() + rect.get_width() / 2
-        
+
         label = f'{y_value:{format_str}}'
-        
+
         ax.annotate(
             label,
             (x_value, y_value),
@@ -136,29 +136,29 @@ def add_value_labels(ax, spacing=5, format_str='.0f'):
 def create_custom_colormap(colors):
     """
     Create custom colormap from list of colors.
-    
+
     Parameters
     ----------
     colors : list
         List of color strings
-    
+
     Returns
     -------
     cmap : matplotlib.colors.LinearSegmentedColormap
         Custom colormap
     """
     from matplotlib.colors import LinearSegmentedColormap
-    
+
     n_bins = 256
     cmap = LinearSegmentedColormap.from_list('custom', colors, N=n_bins)
-    
+
     return cmap
 
 
 def export_plot_data(fig, filename='plot_data.csv'):
     """
     Export plot data to CSV.
-    
+
     Parameters
     ----------
     fig : matplotlib.figure.Figure
@@ -167,19 +167,19 @@ def export_plot_data(fig, filename='plot_data.csv'):
         Output filename
     """
     all_data = []
-    
+
     for ax in fig.get_axes():
         for line in ax.get_lines():
             x_data = line.get_xdata()
             y_data = line.get_ydata()
             label = line.get_label()
-            
+
             df = pd.DataFrame({
                 f'{label}_x': x_data,
                 f'{label}_y': y_data
             })
             all_data.append(df)
-    
+
     if all_data:
         combined = pd.concat(all_data, axis=1)
         combined.to_csv(filename, index=False)
@@ -189,7 +189,7 @@ def export_plot_data(fig, filename='plot_data.csv'):
 def annotate_outliers(ax, x, y, threshold=3):
     """
     Annotate outlier points on scatter plot.
-    
+
     Parameters
     ----------
     ax : matplotlib.axes.Axes
@@ -202,10 +202,10 @@ def annotate_outliers(ax, x, y, threshold=3):
         Z-score threshold for outliers
     """
     from scipy import stats
-    
+
     z_scores = np.abs(stats.zscore(y))
     outliers = z_scores > threshold
-    
+
     for i, (xi, yi, is_outlier) in enumerate(zip(x, y, outliers)):
         if is_outlier:
             ax.annotate(
